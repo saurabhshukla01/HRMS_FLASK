@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Roles{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h3 class="h3 mb-0 text-gray-800">Roles</h3>
+    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="fas fa-download fa-sm text-white-50"></i> Export Roles
+    </a>
+</div>
+
+<!-- Filters Form -->
+<form method="GET" action="{{ url_for('roles') }}" class="mb-4">
+    <div class="form-row">
+
+        <div class="col-md-4 mb-3">
+            <label for="roleNameFilter">Role Name</label>
+            <input type="text" class="form-control" id="roleNameFilter" name="role_name" placeholder="Search Role Name" value="{{ role_name_filter }}">
+        </div>
+
+        <div class="col-md-4 align-self-end mb-3 d-flex">
+            <button type="submit" class="btn btn-primary mr-2 flex-fill">Filter</button>
+            <a href="{{ url_for('roles') }}" class="btn btn-secondary flex-fill">Reset</a>
+        </div>
+
+    </div>
+</form>
+
+<!-- Roles Table -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Roles List</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>ID</th>
+                        <th>UUID</th>
+                        <th>Role Name</th>
+                        <th>Created By</th>
+                        <th>Updated By</th>
+                        <th>Deleted By</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Deleted At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for role in roles %}
+                    <tr>
+                        <td>{{ loop.index }}</td>  {# 1-based index #}
+                        <td>{{ role.id }}</td>
+                        <td>{{ role.uuid }}</td>
+                        <td>{{ role.name }}</td>
+                        <td>{{ role.created_by or 'N/A' }}</td>
+                        <td>{{ role.updated_by or 'N/A' }}</td>
+                        <td>{{ role.deleted_by or 'N/A' }}</td>
+                        <td>{{ role.created_at | custom_datetime }}</td>
+                        <td>{{ role.updated_at | custom_datetime }}</td>
+                        <td>{{ role.deleted_at | custom_datetime }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'components/_pagination.html' %}
+    </div>
+</div>
+
+{% endblock %}

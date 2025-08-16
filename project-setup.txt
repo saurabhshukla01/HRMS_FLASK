@@ -1,0 +1,116 @@
+Here's a **step-by-step guide** to create a Flask project **with a virtual environment inside the project directory**:
+
+---
+
+## ✅ Step-by-Step: Create Flask Project with Virtual Environment
+
+### 🧱 Step 1: Create Project Folder
+
+```bash
+mkdir my_flask_app
+cd my_flask_app
+```
+
+---
+
+### 🐍 Step 2: Create Virtual Environment *Inside* Project
+
+```bash
+python -m venv venv
+```
+
+* This creates a `venv/` folder inside your project to isolate dependencies.
+
+---
+
+### 🔛 Step 3: Activate Virtual Environment
+
+* **Windows:**
+
+```bash
+venv\Scripts\activate
+```
+
+* **macOS/Linux:**
+
+```bash
+source venv/bin/activate
+```
+
+automatically run server : 
+## PowerShell
+# PS C:\Users\saura\pythonProjects\flask_projects\flask_klinik_project> & C:/Users/saura/pythonProjects/flask_projects/flask_klinik_project/venv/Scripts/Activate.ps1
+
+## bash
+# source C:/Users/saura/pythonProjects/flask_projects/flask_klinik_project/venv/Scripts/activate
+
+You'll now see `(venv)` before your terminal prompt.
+
+---
+
+### 📦 Step 4: Install Flask
+
+```bash
+pip install Flask
+```
+
+---
+
+### 📝 Step 5: Create Basic Flask App File
+
+Create a file named `app.py`:
+
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'Hello, Flask!'
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+---
+
+### 📄 Step 6: Add Requirements File *(optional but good practice)*
+
+```bash
+pip freeze > requirements.txt
+```
+
+---
+
+### ▶️ Step 7: Run the Flask App
+
+```bash
+python app.py
+```
+
+* Or with Flask CLI:
+
+```bash
+export FLASK_APP=app        # Linux/macOS
+set FLASK_APP=app           # Windows CMD
+$env:FLASK_APP = "app"      # Windows PowerShell
+
+flask run
+```
+
+---
+
+### 📂 Final Project Structure
+
+```
+my_flask_app/
+│
+├── venv/               # Virtual environment
+├── app.py              # Flask application
+└── requirements.txt    # Dependency list
+```
+
+---
+
+Let me know if you want to use **Blueprints**, **Templates**, or **Static files** next.

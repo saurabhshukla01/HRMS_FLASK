@@ -1,0 +1,159 @@
+To create a **new Flask project setup** from scratch, here’s a clear step-by-step guide — including creating the necessary files and structure.
+
+---
+
+## ✅ 1. Project Folder Structure
+
+Here’s a minimal and scalable Flask project structure:
+
+```
+my_flask_app/
+│
+├── app/
+│   ├── __init__.py       # Initializes the Flask app
+│   ├── routes.py         # App routes
+│   └── templates/        # HTML files (Jinja2 templates)
+│       └── index.html
+│
+├── venv/                 # Virtual environment (optional but recommended)
+├── run.py                # Entry point for running the app
+├── requirements.txt      # Project dependencies
+└── README.md             # Optional project documentation
+```
+
+---
+
+## ✅ 2. Step-by-Step Setup
+
+### Step 1: Create the project folder
+
+```bash
+mkdir my_flask_app
+cd my_flask_app
+```
+
+### Step 2: Create a virtual environment
+
+```bash
+python -m venv venv
+```
+
+Activate it:
+
+* **macOS/Linux:**
+
+  ```bash
+  source venv/bin/activate
+  ```
+* **Windows:**
+
+  ```bash
+  venv\Scripts\activate
+  ```
+
+### Step 3: Install Flask
+
+```bash
+pip install flask
+```
+
+Freeze the dependencies:
+
+```bash
+pip freeze > requirements.txt
+```
+
+---
+
+## ✅ 3. Add Application Files
+
+### `run.py` (entry point)
+
+```python
+from app import create_app
+
+app = create_app()
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+---
+
+### `app/__init__.py` (Flask app factory)
+
+```python
+from flask import Flask
+
+def create_app():
+    app = Flask(__name__)
+
+    from .routes import main
+    app.register_blueprint(main)
+
+    return app
+```
+
+---
+
+### `app/routes.py` (routes with blueprint)
+
+```python
+from flask import Blueprint, render_template
+
+main = Blueprint('main', __name__)
+
+@main.route('/')
+def home():
+    return render_template('index.html')
+```
+
+---
+
+### `app/templates/index.html` (HTML page)
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>Flask App</title>
+  </head>
+  <body>
+    <h1>Welcome to your Flask app!</h1>
+  </body>
+</html>
+```
+
+---
+
+## ✅ 4. Run the Flask App
+
+### Option A: With `run.py`
+
+```bash
+python run.py
+```
+
+### Option B: With `flask run`
+
+Set environment variables first:
+
+**Linux/macOS:**
+
+```bash
+export FLASK_APP=run.py
+export FLASK_ENV=development
+flask run
+```
+
+**Windows CMD:**
+
+```cmd
+set FLASK_APP=run.py
+set FLASK_ENV=development
+flask run
+```
+
+---
+
+Let me know if you want to add a database (e.g. SQLite, SQLAlchemy), authentication, or REST API structure!

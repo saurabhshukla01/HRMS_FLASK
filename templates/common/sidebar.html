@@ -1,0 +1,63 @@
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url_for('index') }}">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">HRMS Portal<sup>2</sup></div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Dashboard -->
+    <li class="nav-item {% if request.endpoint == 'index' %}active{% endif %}">
+        <a class="nav-link" href="{{ url_for('index') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <hr class="sidebar-divider">
+
+    <!-- Roles / Users Menu -->
+    <li class="nav-item {% if request.endpoint in ['roles', 'users'] %}active{% endif %}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers"
+            aria-expanded="true" aria-controls="collapseUsers">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>Roles / Users</span>
+        </a>
+        <div id="collapseUsers" class="collapse {% if request.endpoint in ['roles', 'users'] %}show{% endif %}"
+            aria-labelledby="headingUsers" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Users Screens:</h6>
+                <a class="collapse-item {% if request.endpoint == 'roles' %}active{% endif %}" href="{{ url_for('roles') }}">Roles List</a>
+                <a class="collapse-item {% if request.endpoint == 'users' %}active{% endif %}" href="{{ url_for('users') }}">Users List</a>
+            </div>
+        </div>
+    </li>
+
+        <hr class="sidebar-divider">
+
+    <!-- Auth Menu -->
+    <li class="nav-item {% if request.endpoint in ['login', 'register', 'forgot_password'] %}active{% endif %}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAuth"
+            aria-expanded="true" aria-controls="collapseAuth">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>Auth</span>
+        </a>
+        <div id="collapseAuth" class="collapse {% if request.endpoint in ['login', 'register', 'forgot_password'] %}show{% endif %}"
+            aria-labelledby="headingAuth" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Login Screens:</h6>
+                <a class="collapse-item {% if request.endpoint == 'login' %}active{% endif %}" href="{{ url_for('login') }}">Login</a>
+                <a class="collapse-item {% if request.endpoint == 'register' %}active{% endif %}" href="{{ url_for('register') }}">Register</a>
+                <a class="collapse-item {% if request.endpoint == 'forgot_password' %}active{% endif %}" href="{{ url_for('forgot_password') }}">Forgot Password</a>
+            </div>
+        </div>
+    </li>
+
+</ul>
+<!-- End of Sidebar -->

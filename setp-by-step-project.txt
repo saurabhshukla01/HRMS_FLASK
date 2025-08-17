@@ -1,0 +1,360 @@
+Great — since you’ve uploaded your whole project, I’ll help you:
+
+1. **Reorganize your project structure properly** (to avoid circular imports and make it clean).
+2. **Fix models, migrations, routes, controllers.**
+3. **Provide full step-by-step documentation** on how to set up the database, run migrations, and start the app.
+
+---
+
+## **Step 1. Recommended Project Structure**
+
+Here’s how we’ll organize your project inside `flask_hrms_project`:
+
+```
+flask_hrms_project/
+│
+├── app/
+│   ├── __init__.py          # App factory, init extensions
+│   ├── config.py            # Config class
+│   ├── models/
+│   │   ├── __init__.py      # Import all models here
+│   │   ├── user_model.py    # User model
+│   │   └── role_model.py    # Role model
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── auth_routes.py   # Auth-related endpoints
+│   │   └── admin_routes.py  # Admin panel endpoints
+│   ├── controllers/
+│   │   ├── __init__.py
+│   │   ├── user_controller.py
+│   │   └── role_controller.py
+│   ├── templates/
+│   │   ├── users.html
+│   │   └── roles.html
+│   └── static/
+│
+├── migrations/             # Created after flask db init
+│
+├── scripts/
+│   └── seed_data.py        # For inserting initial data
+│
+├── venv/                   # Your virtual environment
+│
+├── .flaskenv               # (optional) to store FLASK_APP variable
+├── requirements.txt
+├── run.py                  # For running the app
+└── README.md
+```
+
+---
+
+## **Step 2. Core Files**
+
+### `app/__init__.py`
+
+```python
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
+from .config import Config
+
+db = SQLAlchemy()
+migrate = Migrate()
+bcrypt = Bcrypt()
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
+
+    # Initialize extensions
+    db.init_app(app)
+    migrate.init_app(app, db)
+    bcrypt.init_app(app)
+
+    # Import models after db initialization
+    from app.models import user_model, role_model
+
+    # Register blueprints
+    from app.routes.auth_routes import auth_bp
+    from app.routes.admin_routes import admin_bp
+
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(admin_bp)
+
+    return app
+```
+
+---
+
+### `app/models/__init__.py`
+
+```python
+from .user_model import User
+from .role_model import Role
+```
+
+---
+
+### `app/models/role_model.py`
+
+```python
+import uuid
+from datetime import datetime
+from app import db
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+
+    id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
+    name = db.Column(db.String(100), nullable=False)
+    created_by = db.Column(db.Integer, nullable=True)
+    updated_by = db.Column(db.Integer, nullable=True)
+    deleted_by = db.Column(db.Integer, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=True)
+    deleted_at = db.Column(db.DateTime, nullable=True)
+
+    users = db.relationship('User', backref='role', lazy=True)
+```
+
+---
+
+### `app/models/user_model.py`
+
+```python
+import uuid
+from datetime import datetime
+from app import db
+
+class User(db.Model):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=True)
+    created_by = db.Column(db.Integer, nullable=True)
+    updated_by = db.Column(db.Integer, nullable=True)
+    deleted_by = db.Column(db.Integer, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=True)
+    deleted_at = db.Column(db.DateTime, nullable=True)
+```
+
+---
+
+### `run.py`
+
+```python
+from app import create_app
+
+app = create_app()
+
+if __name__ == "__main__":
+    app.run(debug=True)
+```
+
+---
+
+## **Step 3. Database Setup Documentation**
+
+1. **Create virtual environment and install dependencies**
+
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install flask flask_sqlalchemy flask_migrate flask_bcrypt
+pip freeze > requirements.txt
+```
+
+2. **Create your database in MySQL**
+
+```sql
+CREATE DATABASE flask_hrms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+3. **Set your database URL in `app/config.py`**
+
+```python
+import os
+
+class Config:
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:yourpassword@localhost/flask_hrms'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = 'yoursecret'
+```
+
+4. **Initialize migrations**
+
+```bash
+flask db init
+flask db migrate -m "Initial tables"
+flask db upgrade
+```
+
+5. **Seed initial data**
+
+```bash
+python scripts/seed_data.py
+```
+
+6. **Run the server**
+
+```bash
+flask run
+```
+
+---
+
+Do you want me to **rewrite your entire uploaded ZIP now into this format and send it back as a cleaned project** (with migrations included and ready to run)? Or should I just give you **migration scripts and seed file** separately?
+
+
+--------------------------------------------------------------------------------
+
+You want to replace the old direct MySQL config with a proper Flask `Config` class for SQLAlchemy. Here’s how to convert your code:
+
+---
+
+### **Old code**
+
+```python
+app = Flask(__name__)
+app.secret_key = 'supersecretkey'
+
+# MySQL Configuration
+app.config['MYSQL_HOST'] = '127.0.0.1'
+app.config['MYSQL_PORT'] = 3307
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '1234'
+app.config['MYSQL_DB'] = 'flask_hrms_database'
+```
+
+---
+
+### **New `config.py` using SQLAlchemy**
+
+```python
+import os
+
+class Config:
+    # Build the database URI dynamically
+    DB_USER = os.getenv('DB_USER', 'root')
+    DB_PASSWORD = os.getenv('DB_PASSWORD', '1234')
+    DB_HOST = os.getenv('DB_HOST', '127.0.0.1')
+    DB_PORT = os.getenv('DB_PORT', '3307')
+    DB_NAME = os.getenv('DB_NAME', 'flask_hrms_database')
+
+    SQLALCHEMY_DATABASE_URI = (
+        f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    )
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    SECRET_KEY = os.getenv('SECRET_KEY', 'supersecretkey')
+```
+
+---
+
+### **Usage inside `app/__init__.py`**
+
+```python
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from .config import Config
+
+db = SQLAlchemy()
+migrate = Migrate()
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    return app
+```
+
+---
+
+Do you want me to **edit your uploaded project** and replace *all direct MySQL configs* with this new `Config` class approach? Or just give you the modified files to replace manually?
+
+
+-----------------------------------------------------------
+
+After do it  setup you can easy to run this :
+
+That error simply means you haven’t installed **Flask-SQLAlchemy** in your virtual environment yet. Let’s fix it:
+
+---
+
+## **1. Activate your virtual environment**
+
+Make sure you are inside your venv first:
+
+```powershell
+cd C:\Users\saura\pythonProjects\flask_projects\flask_hrms_project
+.\venv\Scripts\activate
+```
+
+You should see `(venv)` at the start of your prompt.
+
+---
+
+## **2. Install Flask-SQLAlchemy and PyMySQL**
+
+Run:
+
+```powershell
+pip install flask flask_sqlalchemy flask-migrate pymysql
+```
+
+These packages are required for your project:
+
+* `flask` → the main web framework
+* `flask_sqlalchemy` → ORM for database
+* `flask_migrate` → migrations support (flask db commands)
+* `pymysql` → MySQL driver
+
+---
+
+## **3. Verify installation**
+
+After installation, check:
+
+```powershell
+pip list | findstr SQLAlchemy
+```
+
+You should see `Flask-SQLAlchemy` in the list.
+
+---
+
+## **4. Re-run Flask**
+
+```powershell
+$env:FLASK_APP="app:create_app"
+$env:FLASK_ENV="development"
+flask run
+```
+
+
+If this run commands not working then use another one :
+
+# flask --app app run
+
+---
+
+Do you want me to **write a full `requirements.txt` file** for your project so you can just do `pip install -r requirements.txt` and avoid missing dependencies in the future? Or should I also include `flask-migrate` setup so your `flask db` commands will finally work?
+
+
+-----------------------------------
+
+
+
+
+

@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_mysqldb import MySQL
+from app.models import user_model, role_model
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -9,7 +10,9 @@ app.config['MYSQL_HOST'] = '127.0.0.1'
 app.config['MYSQL_PORT'] = 3307
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '1234'
-app.config['MYSQL_DB'] = 'flask_hrms_database'
+#app.config['MYSQL_DB'] = 'flask_hrms_database'
+app.config['MYSQL_DB'] = 'flask_hrms'
+
 
 mysql = MySQL(app)
 

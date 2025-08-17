@@ -1,0 +1,90 @@
+{
+	"info": {
+		"_postman_id": "2df932ff-e889-4128-860f-b683b8c69526",
+		"name": "Flask APIs ( HRMS )",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6795355"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": []
+		},
+		{
+			"name": "Get Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/api/users/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"users",
+						""
+					]
+				},
+				"description": "Generated from cURL: curl http://127.0.0.1:5000/api/users/\r\n"
+			},
+			"response": [
+				{
+					"name": "Get users data response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/users/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.13.2"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 17 Aug 2025 13:37:27 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "548"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"email\": \"john@example.com\",\n        \"id\": 2,\n        \"name\": \"John Doe\",\n        \"role\": {\n            \"id\": 1,\n            \"name\": \"Admin\",\n            \"uuid\": \"56de9e21-0c1f-4b1c-a5d4-9cb053d12552\"\n        },\n        \"uuid\": \"8eaea913-d50d-49ac-9ef4-16303b3b9e31\"\n    },\n    {\n        \"email\": \"saurabh@example.com\",\n        \"id\": 3,\n        \"name\": \"Saurabh Shukla\",\n        \"role\": {\n            \"id\": 1,\n            \"name\": \"Admin\",\n            \"uuid\": \"56de9e21-0c1f-4b1c-a5d4-9cb053d12552\"\n        },\n        \"uuid\": \"3076db4a-35c1-439f-9da4-80a673820571\"\n    },\n    {\n        \"email\": \"aman@example.com\",\n        \"id\": 4,\n        \"name\": \"Aman Shukla\",\n        \"role\": {\n            \"id\": 2,\n            \"name\": \"Employee\",\n            \"uuid\": \"9507bdd9-7450-4e40-b664-cc39ad446dad\"\n        },\n        \"uuid\": \"6b221c71-8e25-4e94-b7b5-a01641461464\"\n    }\n]"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h3 class="h3 mb-0 text-gray-800">Users</h3>
+    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report Users</a>
+</div>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Users List</h6>
+    </div>
+    <div class="card-body">
+        <!-- Filters Form -->
+        <form method="GET" action="{{ url_for('user_web.users') }}" class="mb-4">
+
+            <div class="form-row">
+
+                <div class="col-md-3 mb-3">
+                    <label for="roleFilter">Role</label>
+                    <select class="form-control" id="roleFilter" name="role">
+                        <option value="">All Roles</option>
+                        {% for role in roles %}
+                            <option value="{{ role.id }}" {% if role_filter == role.id %}selected{% endif %}>{{ role.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label for="nameFilter">Name</label>
+                    <input type="text" class="form-control" id="nameFilter" name="name" placeholder="Search Name" value="{{ name_filter }}">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label for="emailFilter">Email</label>
+                    <input type="text" class="form-control" id="emailFilter" name="email" placeholder="Search Email" value="{{ email_filter }}">
+                </div>
+
+                <div class="col-md-3 align-self-end mb-3">
+                    <div class="d-flex">
+                        <button type="submit" class="btn btn-primary mr-2 flex-fill">Filter</button>
+                        <a href="{{ url_for('user_web.users') }}" class="btn btn-secondary flex-fill">Reset</a>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Sr.</th>
+                        <th>UUID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Created By</th>
+                        <th>Updated By</th>
+                        <th>Deleted By</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Deleted At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ loop.index }}</td>  <!-- starts at 1 -->
+                        <td>{{ user.uuid }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role_name or 'N/A' }}</td>
+                        <td>{{ user.created_by or 'N/A' }}</td>
+                        <td>{{ user.updated_by or 'N/A' }}</td>
+                        <td>{{ user.deleted_by or 'N/A' }}</td>
+                        <td>{{ user.created_at }}</td>
+                        <td>{{ user.updated_at }}</td>
+                        <td>{{ user.deleted_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.pages > 1 %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('user_web.users', page=pagination.prev_num, role=role_filter, name=name_filter, email=email_filter) }}">&laquo; Prev</a>
+                </li>
+                {% endif %}
+
+                {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if p %}
+                        <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('user_web.users', page=p, role=role_filter, name=name_filter, email=email_filter) }}">{{ p }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('user_web.users', page=pagination.next_num, role=role_filter, name=name_filter, email=email_filter) }}">Next &raquo;</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+    </div>
+</div>
+
+
+{% endblock %}
